@@ -5,14 +5,19 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-# Force install all dependencies, ignoring implicit production flags
-RUN npm install --include=dev
+# Force install all dependencies, ensuring devDependencies are included
+# Disable fund/audit to speed up and reduce network requests
+RUN npm config set registry https://registry.npmjs.org/ && \
+    npm install --include=dev --no-fund --no-audit
+
+# Also install vite globally as a fallback
+RUN npm install -g vite
 
 # Copy source code
 COPY . .
 
-# Build the app explicitly using the local binary to bypass npx IPv6 network drops
-RUN ./node_modules/.bin/vite build
+# Build the app using the globally installed or correctly resolved local vite
+RUN vite build
 
 # Nginx serving stage
 FROM nginx:alpine

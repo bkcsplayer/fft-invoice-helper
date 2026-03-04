@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice {{ invoice.invoice_number }}</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --light-bg: #f0f7ff;
+            --border-radius: 12px;
+            --shadow: 0 4px 16px rgba(0, 30, 85, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f5f5f5;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .invoice-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .company-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-bottom: 10px;
+            max-width: 300px;
+        }
+
+        .logo-container img {
+            max-width: 100%;
+            max-height: 60px;
+            object-fit: contain;
+        }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .company-address {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .invoice-title {
+            font-size: 42px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.95;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 25px;
+            width: 80%;
+        }
+
+        /* ===== CLIENT SECTION ===== */
+        .client-section {
+            display: flex;
+            padding: 30px;
+            background-color: #f0f7ff;
+        }
+
+        .client-info {
+            flex: 1;
+        }
+
+        .client-heading {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .client-details {
+            font-size: 15px;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        /* ===== INVOICE DETAILS ===== */
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            padding: 25px 30px;
+            gap: 30px;
+        }
+
+        .invoice-details>div {
+            flex: 1;
+        }
+
+        .invoice-detail {
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        /* ===== ITEMS TABLE ===== */
+        .table-container {
+            padding: 0 30px 20px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .items-table th {
+            background-color: #2563eb;
+            color: white;
+            padding: 12px 15px;
+            font-weight: 500;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .items-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .items-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .items-table td {
+            padding: 14px 15px;
+            font-size: 14px;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .subtotal-row {
+            background-color: #f8fafc;
+        }
+
+        .subtotal-row td {
+            font-weight: 500;
+            border-bottom: none;
+        }
+
+        .tax-row {
+            background-color: #f1f5f9;
+        }
+
+        .tax-row td {
+            border-bottom: none;
+        }
+
+        .total-row {
+            background-color: #f0f7ff;
+        }
+
+        .total-row td {
+            font-weight: 600;
+            font-size: 16px;
+            color: #0f172a;
+            border-bottom: none;
+            padding: 16px 15px;
+        }
+
+        /* ===== PAYMENT SECTION ===== */
+        .payment-section {
+            padding: 25px 30px;
+            background-color: #fafbff;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .payment-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .payment-item {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .payment-label {
+            font-size: 13px;
+            color: #64748b;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .payment-value {
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        /* ===== SIGNATURE ===== */
+        .signature-section {
+            padding: 20px 30px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-line {
+            width: 200px;
+            border-top: 2px solid #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .signature-name {
+            font-size: 14px;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .signature-title {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* ===== TERMS ===== */
+        .terms-section {
+            padding: 20px 30px;
+            background-color: #f8fafc;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .terms-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .terms-content {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px 30px;
+            background-color: #f1f5f9;
+            flex-wrap: wrap;
+        }
+
+        .footer-item {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .powered-by {
+            text-align: center;
+            padding: 12px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        @media print {
+            .powered-by {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .invoice-container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="invoice-header">
+            <div class="company-details">
+                <div class="logo-container">
+                    {% if logo_base64 %}
+                    <img src="{{ logo_base64 }}" width="40" height="40" alt="Logo" />
+                    {% elif company and company.logo_url %}
+                    <img src="{{ company.logo_url }}" width="40" height="40" alt="Logo" />
+                    {% else %}
+                    <div style="font-size:20px;font-weight:700;color:#2563eb;">
+                        {{ company.code[:2] if company else 'IN' }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="company-name">{{ company.name if company else 'Company' }}</div>
+                    {% if company and company.address %}
+                    <div class="company-address">{{ company.address }}</div>
+                    {% endif %}
+                    {% if company and company.phone %}
+                    <div class="company-address">Tel: {{ company.phone }}</div>
+                    {% endif %}
+                    {% if company and company.gst_number %}
+                    <div class="company-address">{{ company.gst_number }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="invoice-title">INVOICE</div>
+        </div>
+
+        <!-- Client Section -->
+        <div class="client-section">
+            <div class="client-info">
+                <div class="client-heading">Bill to</div>
+                <div class="client-details">
+                    {{ invoice.bill_to_name }}<br>
+                    {% if invoice.bill_to_address %}{{ invoice.bill_to_address }}<br>{% endif %}
+                    {% if invoice.bill_to_phone %}{{ invoice.bill_to_phone }}{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Details -->
+        <div class="invoice-details">
+            <div>
+                <div class="invoice-detail">
+                    <div class="detail-label">Invoice #</div>
+                    <div class="detail-value">{{ invoice.invoice_number }}</div>
+                </div>
+                <div class="invoice-detail">
+                    <div class="detail-label">Invoice Date</div>
+                    <div class="detail-value">{{ invoice.invoice_date }}</div>
+                </div>
+            </div>
+            <div>
+                <div class="invoice-detail">
+                    <div class="detail-label">P.O. #</div>
+                    <div class="detail-value">{{ invoice.po_number or 'N/A' }}</div>
+                </div>
+                <div class="invoice-detail">
+                    <div class="detail-label">Due Date</div>
+                    <div class="detail-value">{{ invoice.due_date }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="table-container">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th style="width:50%">Description</th>
+                        <th style="width:15%;text-align:center">
+                            {{ 'Hours' if invoice.item_type == 'hourly' else 'Qty.' }}
+                        </th>
+                        <th style="width:15%;text-align:right">
+                            {{ 'Rate/Hour' if invoice.item_type == 'hourly' else 'Unit Price' }}
+                        </th>
+                        <th style="width:20%;text-align:right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr style="background-color: {{ '#ffffff' if loop.index0 % 2 == 0 else '#f8faff' }}">
+                        <td style="padding:14px 15px">{{ item.description }}</td>
+                        <td style="padding:14px 15px;text-align:center">
+                            {% if invoice.item_type == 'hourly' %}
+                            {{ item.quantity }} hrs
+                            {% else %}
+                            {{ item.quantity }}
+                            {% endif %}
+                        </td>
+                        <td style="padding:14px 15px;text-align:right">
+                            {% if invoice.item_type == 'hourly' %}
+                            ${{ '%.2f' % (item.unit_price | float) }}/hr
+                            {% else %}
+                            ${{ '%.2f' % (item.unit_price | float) }}
+                            {% endif %}
+                        </td>
+                        <td style="padding:14px 15px;text-align:right;font-weight:500">
+                            ${{ '%.2f' % (item.amount | float) }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    <tr class="subtotal-row">
+                        <td colspan="3" style="text-align:right;padding:14px 15px">Subtotal</td>
+                        <td style="text-align:right;padding:14px 15px">${{ '%.2f' % (invoice.subtotal | float) }}</td>
+                    </tr>
+                    {% if invoice.gst_enabled %}
+                    <tr class="tax-row">
+                        <td colspan="3" style="text-align:right;padding:14px 15px">GST ({{ invoice.gst_rate }}%)</td>
+                        <td style="text-align:right;padding:14px 15px">${{ '%.2f' % (invoice.gst_amount | float) }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if invoice.hst_enabled %}
+                    <tr class="tax-row">
+                        <td colspan="3" style="text-align:right;padding:14px 15px">HST ({{ invoice.hst_rate }}%)</td>
+                        <td style="text-align:right;padding:14px 15px">${{ '%.2f' % (invoice.hst_amount | float) }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align:right">TOTAL</td>
+                        <td style="text-align:right">${{ '%.2f' % (invoice.total | float) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Payment Details -->
+        {% if invoice.payment_method %}
+        <div class="payment-section">
+            <div class="payment-title">Payment Information</div>
+            <div class="payment-grid">
+                {% if invoice.payment_method %}
+                <div class="payment-item">
+                    <span class="payment-label">Payment Method:</span>
+                    <span class="payment-value">{{ invoice.payment_method }}</span>
+                </div>
+                {% endif %}
+                {% if invoice.payment_company_name %}
+                <div class="payment-item">
+                    <span class="payment-label">Company:</span>
+                    <span class="payment-value">{{ invoice.payment_company_name }}</span>
+                </div>
+                {% endif %}
+                {% if invoice.payee %}
+                <div class="payment-item">
+                    <span class="payment-label">Payee:</span>
+                    <span class="payment-value">{{ invoice.payee }}</span>
+                </div>
+                {% endif %}
+                {% if invoice.bank_name %}
+                <div class="payment-item">
+                    <span class="payment-label">Bank:</span>
+                    <span class="payment-value">{{ invoice.bank_name }}</span>
+                </div>
+                {% endif %}
+                {% if invoice.transit_number %}
+                <div class="payment-item">
+                    <span class="payment-label">Transit #:</span>
+                    <span class="payment-value">{{ invoice.transit_number }}</span>
+                </div>
+                {% endif %}
+                {% if invoice.institution_number %}
+                <div class="payment-item">
+                    <span class="payment-label">Institution #:</span>
+                    <span class="payment-value">{{ invoice.institution_number }}</span>
+                </div>
+                {% endif %}
+                {% if invoice.account_number %}
+                <div class="payment-item">
+                    <span class="payment-label">Account #:</span>
+                    <span class="payment-value">{{ invoice.account_number }}</span>
+                </div>
+                {% endif %}
+                {% if invoice.bank_address %}
+                <div class="payment-item" style="grid-column: 1 / -1">
+                    <span class="payment-label">Bank Address:</span>
+                    <span class="payment-value">{{ invoice.bank_address }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Signature -->
+        {% if invoice.signature_name %}
+        <div class="signature-section">
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <div class="signature-name">{{ invoice.signature_name }}</div>
+                <div class="signature-title">Authorized Signature</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Terms -->
+        {% if invoice.terms_conditions %}
+        <div class="terms-section">
+            <div class="terms-title">Terms & Conditions:</div>
+            <div class="terms-content">{{ invoice.terms_conditions }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Footer -->
+        <div class="footer">
+            {% if company %}
+            <div class="footer-item">{{ company.name }}</div>
+            {% if company.phone %}<div class="footer-item">Tel: {{ company.phone }}</div>{% endif %}
+            {% if company.email %}<div class="footer-item">{{ company.email }}</div>{% endif %}
+            {% if company.website %}<div class="footer-item">{{ company.website }}</div>{% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="powered-by">Powered by Futurefrontier Technology Ltd.</div>
+</body>
+
+</html>

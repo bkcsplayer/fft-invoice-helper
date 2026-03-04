@@ -454,9 +454,12 @@ async def preview_html(
     return HTMLResponse(content=html)
 
 
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, Request
+
 @router.post("/{invoice_id}/send-email")
 async def send_email(
     invoice_id: int,
+    request: Request,
     body: Optional[dict] = None,
     db: AsyncSession = Depends(get_db),
     _: dict = Depends(get_current_user),
@@ -504,9 +507,16 @@ async def send_email(
 
     smtp_cfg = EnvSmtp()
 
+    # Determine public logo URL to prevent email clients from blocking base64 image strings
+    scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
+    host = request.headers.get("x-forwarded-host", request.url.netloc)
+    if not host:
+        host = request.headers.get("host", "localhost")
+    logo_url = f"{scheme}://{host}/logo.png"
+
     # Generate HTML content using native pdf_service handling
     try:
-        html_content = generate_invoice_html(invoice, invoice.company, invoice.items)
+        html_content = generate_invoice_html(invoice, invoice.company, invoice.items, logo_base64=logo_url)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"HTML generation failed: {str(e)}")
 

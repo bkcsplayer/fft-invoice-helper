@@ -5,13 +5,12 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-# Force install all dependencies, ensuring devDependencies are included
-# Disable fund/audit to speed up and reduce network requests
-RUN npm config set registry https://registry.npmjs.org/ && \
+# Force IPv4 routing by using a reliable mirror (npmmirror) instead of default npmjs that triggers IPv6 drops on some VPS routing
+RUN npm config set registry https://registry.npmmirror.com/ && \
     npm install --include=dev --no-fund --no-audit
 
-# Also install vite globally as a fallback
-RUN npm install -g vite
+# Also install vite globally as a fallback using the mirror
+RUN npm install -g vite --registry=https://registry.npmmirror.com/
 
 # Copy source code
 COPY . .

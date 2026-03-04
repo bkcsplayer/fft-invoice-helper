@@ -32,7 +32,7 @@ services:
     volumes:
       - pdf_storage_prod:/app/pdfs
     ports:
-      - "127.0.0.1:8000:8000" # Only bind to localhost for Nginx reverse proxy
+      - "127.0.0.1:8085:8000" # Changed from 8000 to 8085 to avoid conflicts
     depends_on:
       - db
     networks:
@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile.prod # Assumes an Nginx based Dockerfile for built React app
     restart: always
     ports:
-      - "127.0.0.1:3000:80" # Only bind to localhost for Nginx reverse proxy
+      - "127.0.0.1:3085:80" # Changed from 3000 to 3085 to avoid conflicts
     depends_on:
       - backend
     networks:

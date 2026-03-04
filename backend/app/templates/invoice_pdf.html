@@ -73,7 +73,7 @@
 
         .logo-container img {
             max-width: 100%;
-            max-height: 60px;
+            max-height: 200px;
             display: inline-block;
         }
 
@@ -356,11 +356,11 @@
             <div class="company-details">
                 <div class="logo-container">
                     {% if logo_base64 %}
-                    <img src="{{ logo_base64 }}" width="40" height="40" alt="Logo" />
+                    <img src="{{ logo_base64 }}" height="160" alt="Logo" />
                     {% elif company and company.logo_url %}
-                    <img src="{{ company.logo_url }}" width="40" height="40" alt="Logo" />
+                    <img src="{{ company.logo_url }}" height="160" alt="Logo" />
                     {% else %}
-                    <div style="font-size:20px;font-weight:700;color:#2563eb;">
+                    <div style="font-size:32px;font-weight:700;color:#2563eb;">
                         {{ company.code[:2] if company else 'IN' }}
                     </div>
                     {% endif %}

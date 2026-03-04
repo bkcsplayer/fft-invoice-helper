@@ -5,7 +5,8 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install
+# Force install all dependencies, ignoring implicit production flags
+RUN npm install --include=dev
 
 # Copy source code
 COPY . .

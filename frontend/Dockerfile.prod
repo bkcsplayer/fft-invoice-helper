@@ -11,8 +11,8 @@ RUN npm install --include=dev
 # Copy source code
 COPY . .
 
-# Build the app explicitly for production
-RUN npm run build
+# Build the app explicitly using the local binary to bypass npx IPv6 network drops
+RUN ./node_modules/.bin/vite build
 
 # Nginx serving stage
 FROM nginx:alpine

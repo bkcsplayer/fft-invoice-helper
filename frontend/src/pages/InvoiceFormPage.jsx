@@ -16,19 +16,19 @@ const ITEM_TYPES = [
 ]
 
 const DEFAULT_PAYMENT = {
-    payment_method: 'Direct Bank',
+    payment_method: '',
     payment_company_name: 'FUTUREFRONTIER TECHNOLOGY LTD.',
-    payment_company_address: '19651 SHERIFF KING STREET, SOUTHWEST, CALGARY, ALBERTA, T2X 4K5, CANADA',
+    payment_company_address: '4838 Richard Rd SW #300 Calgary, AB T3E 6L1',
     contact_phone: '403-399-0959',
     contact_email: '',
-    payee: 'FUTUREFRONTIER TECHNOLOGY LTD.',
+    payee: '',
     signature_name: 'Bruce Wang',
     website: 'www.futurefrontier.ca',
-    bank_name: 'BMO Bank of Montreal',
-    bank_address: '6550 MACLEOD TRAIL SOUTHWEST, CALGARY, ALBERTA T2H 0K6, CANADA',
-    transit_number: '05269',
-    institution_number: '001',
-    account_number: '1973-604',
+    bank_name: '',
+    bank_address: '',
+    transit_number: '',
+    institution_number: '',
+    account_number: '',
 }
 
 export default function InvoiceFormPage() {
@@ -115,19 +115,19 @@ export default function InvoiceFormPage() {
                     hst_enabled: inv.hst_enabled ?? false,
                     hst_rate: Number(inv.hst_rate) || 0,
                     terms_conditions: inv.terms_conditions || '',
-                    payment_method: inv.payment_method || 'Direct Bank',
+                    payment_method: '',
                     payment_company_name: inv.payment_company_name || '',
                     payment_company_address: inv.payment_company_address || '',
                     contact_phone: inv.contact_phone || '',
                     contact_email: inv.contact_email || '',
-                    payee: inv.payee || '',
+                    payee: '',
                     signature_name: inv.signature_name || '',
                     website: inv.website || '',
-                    bank_name: inv.bank_name || '',
-                    bank_address: inv.bank_address || '',
-                    transit_number: inv.transit_number || '',
-                    institution_number: inv.institution_number || '',
-                    account_number: inv.account_number || '',
+                    bank_name: '',
+                    bank_address: '',
+                    transit_number: '',
+                    institution_number: '',
+                    account_number: '',
                 })
                 if (inv.items && inv.items.length > 0) {
                     setItems(inv.items.map((item, idx) => ({
@@ -854,12 +854,12 @@ export default function InvoiceFormPage() {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
-                            ['payment_method', 'Payment Method'],
+                            /* Removed for security reasons: ['payment_method', 'Payment Method'], */
                             ['payment_company_name', 'Company Name'],
                             ['payment_company_address', 'Company Address'],
                             ['contact_phone', 'Contact Phone'],
                             ['contact_email', 'Contact Email'],
-                            ['payee', 'Payee'],
+                            /* Removed for security reasons: ['payee', 'Payee'], */
                             ['website', 'Website'],
                             ['signature_name', 'Authorized By'],
                         ].map(([key, label]) => (
@@ -876,31 +876,7 @@ export default function InvoiceFormPage() {
                     </div>
                 </div>
 
-                {/* Bank Information */}
-                <div className="card p-6">
-                    <h2 className="text-lg font-semibold text-primary-800 mb-4 flex items-center gap-2">
-                        🏦 Bank Information
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {[
-                            ['bank_name', 'Bank Name'],
-                            ['bank_address', 'Bank Address'],
-                            ['transit_number', 'Transit Number'],
-                            ['institution_number', 'Institution Number'],
-                            ['account_number', 'Account Number'],
-                        ].map(([key, label]) => (
-                            <div key={key} className={key === 'bank_address' ? 'md:col-span-2' : ''}>
-                                <label className="block text-sm font-medium text-gray-600 mb-1">{label}</label>
-                                <input
-                                    type="text"
-                                    value={form[key]}
-                                    onChange={e => updateForm(key, e.target.value)}
-                                    className="input-field"
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                {/* Bank Information removed for security reasons */}
 
                 {/* Terms */}
                 <div className="card p-6">

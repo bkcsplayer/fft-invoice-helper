@@ -200,21 +200,29 @@ async def create_invoice(
         total=total,
     )
     db.add(invoice)
-    await db.flush()
 
-    # Create items
-    for idx, item_data in enumerate(data.items):
-        item = InvoiceItem(
-            invoice_id=invoice.id,
-            sort_order=item_data.sort_order or idx,
-            quantity=item_data.quantity,
-            description=item_data.description,
-            unit_price=item_data.unit_price,
-            amount=Decimal(str(item_data.quantity)) * Decimal(str(item_data.unit_price)),
-        )
-        db.add(item)
+    try:
+        await db.flush()
 
-    await db.flush()
+        # Create items
+        for idx, item_data in enumerate(data.items):
+            item = InvoiceItem(
+                invoice_id=invoice.id,
+                sort_order=item_data.sort_order or idx,
+                quantity=item_data.quantity,
+                description=item_data.description,
+                unit_price=item_data.unit_price,
+                amount=Decimal(str(item_data.quantity)) * Decimal(str(item_data.unit_price)),
+            )
+            db.add(item)
+
+        await db.flush()
+    except Exception as e:
+        await db.rollback()
+        error_msg = str(e)
+        if "UniqueViolationError" in error_msg or "UNIQUE constraint failed: invoices.invoice_number" in error_msg or "duplicate key value violates unique constraint" in error_msg:
+            raise HTTPException(status_code=400, detail="Invoice number already exists for this date. Please change the Code Number to make it unique.")
+        raise HTTPException(status_code=500, detail=f"Database error while saving invoice: {error_msg}")
 
     # Reload with relationships
     result = await db.execute(
@@ -314,7 +322,14 @@ async def update_invoice(
     invoice.hst_amount = hst_amount
     invoice.total = total
 
-    await db.flush()
+    try:
+        await db.flush()
+    except Exception as e:
+        await db.rollback()
+        error_msg = str(e)
+        if "UniqueViolationError" in error_msg or "UNIQUE constraint failed: invoices.invoice_number" in error_msg or "duplicate key value violates unique constraint" in error_msg:
+            raise HTTPException(status_code=400, detail="Invoice number already exists for this date. Please change the Code Number to make it unique.")
+        raise HTTPException(status_code=500, detail=f"Database error while updating invoice: {error_msg}")
 
     # Reload
     result = await db.execute(

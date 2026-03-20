@@ -13,6 +13,7 @@ class InvoiceItem(Base):
     description = Column(String(500), nullable=False)
     unit_price = Column(Numeric(12, 2), nullable=False, default=0)
     amount = Column(Numeric(12, 2), nullable=False, default=0)
+    is_coupon = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     invoice = relationship("Invoice", back_populates="items")

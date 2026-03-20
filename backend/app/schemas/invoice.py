@@ -11,6 +11,7 @@ class InvoiceItemBase(BaseModel):
     description: str
     unit_price: Decimal = Decimal("0")
     amount: Decimal = Decimal("0")
+    is_coupon: bool = False
 
 
 class InvoiceItemCreate(InvoiceItemBase):

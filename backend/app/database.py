@@ -36,3 +36,10 @@ async def init_db():
             ))
         except Exception:
             pass  # Column already exists or DB doesn't support IF NOT EXISTS
+        # Auto-migration: add is_coupon if it doesn't exist
+        try:
+            await conn.execute(text(
+                "ALTER TABLE invoice_items ADD COLUMN IF NOT EXISTS is_coupon BOOLEAN DEFAULT FALSE"
+            ))
+        except Exception:
+            pass

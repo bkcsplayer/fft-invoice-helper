@@ -1,0 +1,7 @@
+﻿CONTAINER ID   IMAGE                                COMMAND                  CREATED        STATUS                        PORTS                                         NAMES
+2cedaa4743e6   personal-inventory-helper-frontend   "docker-entrypoint.sΓÇª"   6 days ago     Up About a minute             0.0.0.0:5173->5173/tcp, [::]:5173->5173/tcp   personal-inventory-helper-frontend-1
+f36a7025b384   personal-inventory-helper-backend    "sh -c 'alembic upgrΓÇª"   6 days ago     Up About a minute             0.0.0.0:8800->8000/tcp, [::]:8800->8000/tcp   personal-inventory-helper-backend-1
+f8bfdd185426   postgres:15                          "docker-entrypoint.sΓÇª"   6 days ago     Up About a minute (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   personal-inventory-helper-postgres-1
+40326faac0fb   redis:7-alpine                       "docker-entrypoint.sΓÇª"   6 days ago     Up About a minute (healthy)   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   personal-inventory-helper-redis-1
+5aa4eaf28aa6   fft-ai-project-helper-backend        "uvicorn app.main:apΓÇª"   2 months ago   Up About a minute             3100/tcp                                      project_helper_backend
+8c56ba5cce7f   fft-ai-project-helper-frontend       "docker-entrypoint.sΓÇª"   2 months ago   Up About a minute             3101/tcp                                      project_helper_frontend

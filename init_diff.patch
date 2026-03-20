@@ -1,0 +1,29 @@
+﻿commit 54dea46ea6d139b3561fb2c1936f1697de019069
+Author: Cool Bao <bkcsplayer@gmail.com>
+Date:   Tue Mar 3 19:51:19 2026 -0700
+
+    Initial commit: FFT Invoice Helper with Docker, React frontend, and FastAPI backend
+
+diff --git a/backend/app/models/__init__.py b/backend/app/models/__init__.py
+new file mode 100644
+index 0000000..a397c23
+--- /dev/null
++++ b/backend/app/models/__init__.py
+@@ -0,0 +1,17 @@
++from app.models.company import Company
++from app.models.service_type import ServiceType
++from app.models.invoice import Invoice
++from app.models.invoice_item import InvoiceItem
++from app.models.email_contact import EmailContact
++from app.models.smtp_settings import SmtpSettings
++from app.models.saved_client import SavedClient
++
++__all__ = [
++    "Company",
++    "ServiceType",
++    "Invoice",
++    "InvoiceItem",
++    "EmailContact",
++    "SmtpSettings",
++    "SavedClient",
++]

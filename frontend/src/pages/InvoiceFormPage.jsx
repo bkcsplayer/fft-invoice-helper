@@ -136,6 +136,7 @@ export default function InvoiceFormPage() {
                         description: item.description,
                         unit_price: Number(item.unit_price),
                         amount: Number(item.amount),
+                        is_coupon: !!item.is_coupon,
                     })))
                 }
             }
@@ -216,6 +217,7 @@ export default function InvoiceFormPage() {
             description: '',
             unit_price: 0,
             amount: 0,
+            is_coupon: false,
         }
         if (form.item_type === 'solar_rate') {
             newItem.watts_per_panel = defaultWatts
@@ -278,6 +280,7 @@ export default function InvoiceFormPage() {
                         description: item.description,
                         unit_price: computedUnitPrice,
                         amount: Number(item.quantity) * computedUnitPrice,
+                        is_coupon: !!item.is_coupon,
                     }
                 }
                 return {
@@ -286,6 +289,7 @@ export default function InvoiceFormPage() {
                     description: item.description,
                     unit_price: Number(item.unit_price),
                     amount: Number(item.quantity) * Number(item.unit_price),
+                    is_coupon: !!item.is_coupon,
                 }
             })
 
@@ -642,7 +646,7 @@ export default function InvoiceFormPage() {
                                 <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-gray-500 uppercase px-1">
                                     <div className="col-span-1">Order</div>
                                     <div className="col-span-1">Panels</div>
-                                    <div className="col-span-3">Address / Description</div>
+                                    <div className="col-span-3">Type / Description</div>
                                     <div className="col-span-2">Watts/Panel</div>
                                     <div className="col-span-2">Rate/W (CAD)</div>
                                     <div className="col-span-2">Amount</div>
@@ -669,13 +673,20 @@ export default function InvoiceFormPage() {
                                                     placeholder="35"
                                                 />
                                             </div>
-                                            <div className="col-span-3">
+                                            <div className="col-span-3 flex items-center gap-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => updateItem(idx, 'is_coupon', !item.is_coupon)}
+                                                    className={`text-[10px] px-1.5 py-1 rounded border min-w-[50px] whitespace-nowrap transition-colors ${item.is_coupon ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-200' : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'}`}
+                                                >
+                                                    {item.is_coupon ? 'Coupon' : 'Item'}
+                                                </button>
                                                 <input
                                                     type="text"
                                                     value={item.description}
                                                     onChange={e => updateItem(idx, 'description', e.target.value)}
-                                                    className="input-field p-2 text-sm"
-                                                    placeholder="e.g. 138 sage hill grove NW"
+                                                    className="input-field p-2 text-sm w-full"
+                                                    placeholder="Description"
                                                 />
                                             </div>
                                             <div className="col-span-2">
@@ -695,7 +706,8 @@ export default function InvoiceFormPage() {
                                                     value={item.rate_per_watt || ''}
                                                     onChange={e => updateItem(idx, 'rate_per_watt', e.target.value)}
                                                     className="input-field p-2 text-sm text-right"
-                                                    min="0"
+                                                    min={item.is_coupon ? undefined : "0"}
+                                                    max={item.is_coupon ? "0" : undefined}
                                                     step="0.01"
                                                     placeholder="0.48"
                                                 />
@@ -722,7 +734,7 @@ export default function InvoiceFormPage() {
                                     <div className="col-span-1">
                                         {form.item_type === 'hourly' ? 'Hours' : 'Qty'}
                                     </div>
-                                    <div className="col-span-5">Description</div>
+                                    <div className="col-span-5">Type / Description</div>
                                     <div className="col-span-2">
                                         {form.item_type === 'hourly' ? 'Rate/Hour' : 'Unit Price'}
                                     </div>
@@ -745,13 +757,20 @@ export default function InvoiceFormPage() {
                                                 step="0.5"
                                             />
                                         </div>
-                                        <div className="col-span-5">
+                                        <div className="col-span-5 flex items-center gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => updateItem(idx, 'is_coupon', !item.is_coupon)}
+                                                className={`text-[10px] px-1.5 py-1 rounded border min-w-[50px] whitespace-nowrap transition-colors ${item.is_coupon ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-200' : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'}`}
+                                            >
+                                                {item.is_coupon ? 'Coupon' : 'Item'}
+                                            </button>
                                             <input
                                                 type="text"
                                                 value={item.description}
                                                 onChange={e => updateItem(idx, 'description', e.target.value)}
-                                                className="input-field p-2 text-sm"
-                                                placeholder="Item description"
+                                                className="input-field p-2 text-sm w-full"
+                                                placeholder="Description"
                                             />
                                         </div>
                                         <div className="col-span-2">
@@ -760,7 +779,8 @@ export default function InvoiceFormPage() {
                                                 value={item.unit_price}
                                                 onChange={e => updateItem(idx, 'unit_price', e.target.value)}
                                                 className="input-field p-2 text-sm text-right"
-                                                min="0"
+                                                min={item.is_coupon ? undefined : "0"}
+                                                max={item.is_coupon ? "0" : undefined}
                                                 step="0.01"
                                             />
                                         </div>

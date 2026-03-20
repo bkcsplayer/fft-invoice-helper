@@ -1,0 +1,338 @@
+﻿commit e07ae7c6719db9c450b0cc5143c6d2eeec62727b
+Author: Cool Bao <bkcsplayer@gmail.com>
+Date:   Fri Mar 6 19:15:36 2026 -0700
+
+    Update frontend invoice form for security and default address
+
+diff --git a/frontend/src/pages/InvoiceFormPage.jsx b/frontend/src/pages/InvoiceFormPage.jsx
+index a3d007d..28dbbb5 100644
+--- a/frontend/src/pages/InvoiceFormPage.jsx
++++ b/frontend/src/pages/InvoiceFormPage.jsx
+@@ -16,19 +16,19 @@ const ITEM_TYPES = [
+ ]
+ 
+ const DEFAULT_PAYMENT = {
+-    payment_method: 'Direct Bank',
++    payment_method: '',
+     payment_company_name: 'FUTUREFRONTIER TECHNOLOGY LTD.',
+-    payment_company_address: '19651 SHERIFF KING STREET, SOUTHWEST, CALGARY, ALBERTA, T2X 4K5, CANADA',
++    payment_company_address: '4838 Richard Rd SW #300 Calgary, AB T3E 6L1',
+     contact_phone: '403-399-0959',
+     contact_email: '',
+-    payee: 'FUTUREFRONTIER TECHNOLOGY LTD.',
++    payee: '',
+     signature_name: 'Bruce Wang',
+     website: 'www.futurefrontier.ca',
+-    bank_name: 'BMO Bank of Montreal',
+-    bank_address: '6550 MACLEOD TRAIL SOUTHWEST, CALGARY, ALBERTA T2H 0K6, CANADA',
+-    transit_number: '05269',
+-    institution_number: '001',
+-    account_number: '1973-604',
++    bank_name: '',
++    bank_address: '',
++    transit_number: '',
++    institution_number: '',
++    account_number: '',
+ }
+ 
+ export default function InvoiceFormPage() {
+@@ -115,19 +115,19 @@ export default function InvoiceFormPage() {
+                     hst_enabled: inv.hst_enabled ?? false,
+                     hst_rate: Number(inv.hst_rate) || 0,
+                     terms_conditions: inv.terms_conditions || '',
+-                    payment_method: inv.payment_method || 'Direct Bank',
++                    payment_method: '',
+                     payment_company_name: inv.payment_company_name || '',
+                     payment_company_address: inv.payment_company_address || '',
+                     contact_phone: inv.contact_phone || '',
+                     contact_email: inv.contact_email || '',
+-                    payee: inv.payee || '',
++                    payee: '',
+                     signature_name: inv.signature_name || '',
+                     website: inv.website || '',
+-                    bank_name: inv.bank_name || '',
+-                    bank_address: inv.bank_address || '',
+-                    transit_number: inv.transit_number || '',
+-                    institution_number: inv.institution_number || '',
+-                    account_number: inv.account_number || '',
++                    bank_name: '',
++                    bank_address: '',
++                    transit_number: '',
++                    institution_number: '',
++                    account_number: '',
+                 })
+                 if (inv.items && inv.items.length > 0) {
+                     setItems(inv.items.map((item, idx) => ({
+@@ -854,12 +854,12 @@ export default function InvoiceFormPage() {
+                     </h2>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         {[
+-                            ['payment_method', 'Payment Method'],
++                            /* Removed for security reasons: ['payment_method', 'Payment Method'], */
+                             ['payment_company_name', 'Company Name'],
+                             ['payment_company_address', 'Company Address'],
+                             ['contact_phone', 'Contact Phone'],
+                             ['contact_email', 'Contact Email'],
+-                            ['payee', 'Payee'],
++                            /* Removed for security reasons: ['payee', 'Payee'], */
+                             ['website', 'Website'],
+                             ['signature_name', 'Authorized By'],
+                         ].map(([key, label]) => (
+@@ -876,31 +876,7 @@ export default function InvoiceFormPage() {
+                     </div>
+                 </div>
+ 
+-                {/* Bank Information */}
+-                <div className="card p-6">
+-                    <h2 className="text-lg font-semibold text-primary-800 mb-4 flex items-center gap-2">
+-                        ≡ƒÅª Bank Information
+-                    </h2>
+-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+-                        {[
+-                            ['bank_name', 'Bank Name'],
+-                            ['bank_address', 'Bank Address'],
+-                            ['transit_number', 'Transit Number'],
+-                            ['institution_number', 'Institution Number'],
+-                            ['account_number', 'Account Number'],
+-                        ].map(([key, label]) => (
+-                            <div key={key} className={key === 'bank_address' ? 'md:col-span-2' : ''}>
+-                                <label className="block text-sm font-medium text-gray-600 mb-1">{label}</label>
+-                                <input
+-                                    type="text"
+-                                    value={form[key]}
+-                                    onChange={e => updateForm(key, e.target.value)}
+-                                    className="input-field"
+-                                />
+-                            </div>
+-                        ))}
+-                    </div>
+-                </div>
++                {/* Bank Information removed for security reasons */}
+ 
+                 {/* Terms */}
+                 <div className="card p-6">
+
+commit 7135930fbd2515b6682567b3dc58b51af00b972c
+Author: Cool Bao <bkcsplayer@gmail.com>
+Date:   Tue Mar 3 21:13:26 2026 -0700
+
+    Update invoice logo size to 160x200
+
+diff --git a/backend/app/templates/invoice_pdf.html b/backend/app/templates/invoice_pdf.html
+index ee1cba2..03cb31b 100644
+--- a/backend/app/templates/invoice_pdf.html
++++ b/backend/app/templates/invoice_pdf.html
+@@ -73,7 +73,7 @@
+ 
+         .logo-container img {
+             max-width: 100%;
+-            max-height: 60px;
++            max-height: 200px;
+             display: inline-block;
+         }
+ 
+@@ -356,11 +356,11 @@
+             <div class="company-details">
+                 <div class="logo-container">
+                     {% if logo_base64 %}
+-                    <img src="{{ logo_base64 }}" width="40" height="40" alt="Logo" />
++                    <img src="{{ logo_base64 }}" height="160" alt="Logo" />
+                     {% elif company and company.logo_url %}
+-                    <img src="{{ company.logo_url }}" width="40" height="40" alt="Logo" />
++                    <img src="{{ company.logo_url }}" height="160" alt="Logo" />
+                     {% else %}
+-                    <div style="font-size:20px;font-weight:700;color:#2563eb;">
++                    <div style="font-size:32px;font-weight:700;color:#2563eb;">
+                         {{ company.code[:2] if company else 'IN' }}
+                     </div>
+                     {% endif %}
+
+commit 592bb114461b0314cb562a5c648d83dd83b45574
+Author: Cool Bao <bkcsplayer@gmail.com>
+Date:   Tue Mar 3 20:37:28 2026 -0700
+
+    Fix email logo by passing public frontend URL and making CSS email-client compatible
+
+diff --git a/backend/app/api/invoices.py b/backend/app/api/invoices.py
+index 78a5be4..f4d4901 100644
+--- a/backend/app/api/invoices.py
++++ b/backend/app/api/invoices.py
+@@ -454,9 +454,12 @@ async def preview_html(
+     return HTMLResponse(content=html)
+ 
+ 
++from fastapi import APIRouter, Depends, HTTPException, Query, Response, Request
++
+ @router.post("/{invoice_id}/send-email")
+ async def send_email(
+     invoice_id: int,
++    request: Request,
+     body: Optional[dict] = None,
+     db: AsyncSession = Depends(get_db),
+     _: dict = Depends(get_current_user),
+@@ -504,9 +507,16 @@ async def send_email(
+ 
+     smtp_cfg = EnvSmtp()
+ 
++    # Determine public logo URL to prevent email clients from blocking base64 image strings
++    scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
++    host = request.headers.get("x-forwarded-host", request.url.netloc)
++    if not host:
++        host = request.headers.get("host", "localhost")
++    logo_url = f"{scheme}://{host}/logo.png"
++
+     # Generate HTML content using native pdf_service handling
+     try:
+-        html_content = generate_invoice_html(invoice, invoice.company, invoice.items)
++        html_content = generate_invoice_html(invoice, invoice.company, invoice.items, logo_base64=logo_url)
+     except Exception as e:
+         raise HTTPException(status_code=500, detail=f"HTML generation failed: {str(e)}")
+ 
+diff --git a/backend/app/templates/invoice_pdf.html b/backend/app/templates/invoice_pdf.html
+index 41632bd..ee1cba2 100644
+--- a/backend/app/templates/invoice_pdf.html
++++ b/backend/app/templates/invoice_pdf.html
+@@ -43,50 +43,52 @@
+ 
+         /* ===== HEADER ===== */
+         .invoice-header {
+-            display: flex;
+-            flex-direction: column;
+-            justify-content: center;
+-            align-items: center;
++            /* Fallback for email clients that strip flex */
+             text-align: center;
+             padding: 40px 30px;
+             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+             color: white;
+             border-radius: 12px 12px 0 0;
+-        }
+ 
+-        .company-details {
++            /* Modern PDF engines */
+             display: flex;
+             flex-direction: column;
++            justify-content: center;
+             align-items: center;
+-            gap: 10px;
++        }
++
++        .company-details {
++            display: inline-block;
++            text-align: center;
+             margin-bottom: 25px;
++            width: 100%;
+         }
+ 
+         .logo-container {
+-            display: flex;
+-            align-items: center;
+-            justify-content: center;
+-            flex-shrink: 0;
+-            margin-bottom: 10px;
++            display: block;
++            margin: 0 auto 10px auto;
++            text-align: center;
+             max-width: 300px;
+         }
+ 
+         .logo-container img {
+             max-width: 100%;
+             max-height: 60px;
+-            object-fit: contain;
++            display: inline-block;
+         }
+ 
+         .company-name {
+             font-size: 24px;
+             font-weight: 700;
+             margin-bottom: 4px;
++            display: block;
+         }
+ 
+         .company-address {
+             font-size: 14px;
+             opacity: 0.9;
+             line-height: 1.6;
++            display: block;
+         }
+ 
+         .invoice-title {
+@@ -95,10 +97,12 @@
+             text-transform: uppercase;
+             letter-spacing: 2px;
+             opacity: 0.95;
+-            margin-top: 10px;
++            margin: 10px auto 0 auto;
+             border-top: 1px solid rgba(255, 255, 255, 0.3);
+             padding-top: 25px;
+             width: 80%;
++            display: block;
++            text-align: center;
+         }
+ 
+         /* ===== CLIENT SECTION ===== */
+
+commit 061ea70cf04a312c01128f603a79c47317703a6e
+Author: Cool Bao <bkcsplayer@gmail.com>
+Date:   Tue Mar 3 20:19:43 2026 -0700
+
+    Fix ENETUNREACH by routing npm through npmmirror IPv4 registry
+
+diff --git a/frontend/Dockerfile.prod b/frontend/Dockerfile.prod
+index 42cae2b..0068070 100644
+--- a/frontend/Dockerfile.prod
++++ b/frontend/Dockerfile.prod
+@@ -5,13 +5,12 @@ WORKDIR /app
+ 
+ # Copy package files and install dependencies
+ COPY package*.json ./
+-# Force install all dependencies, ensuring devDependencies are included
+-# Disable fund/audit to speed up and reduce network requests
+-RUN npm config set registry https://registry.npmjs.org/ && \
++# Force IPv4 routing by using a reliable mirror (npmmirror) instead of default npmjs that triggers IPv6 drops on some VPS routing
++RUN npm config set registry https://registry.npmmirror.com/ && \
+     npm install --include=dev --no-fund --no-audit
+ 
+-# Also install vite globally as a fallback
+-RUN npm install -g vite
++# Also install vite globally as a fallback using the mirror
++RUN npm install -g vite --registry=https://registry.npmmirror.com/
+ 
+ # Copy source code
+ COPY . .
+
+commit 4b7316fbd806efca886ba32f75be581bf047441b
+Author: Cool Bao <bkcsplayer@gmail.com>
+Date:   Tue Mar 3 20:15:59 2026 -0700
+
+    Fix Vite missing error by globally installing vite as a fallback
+
+diff --git a/frontend/Dockerfile.prod b/frontend/Dockerfile.prod
+index bc65587..42cae2b 100644
+--- a/frontend/Dockerfile.prod
++++ b/frontend/Dockerfile.prod
+@@ -5,14 +5,19 @@ WORKDIR /app
+ 
+ # Copy package files and install dependencies
+ COPY package*.json ./
+-# Force install all dependencies, ignoring implicit production flags
+-RUN npm install --include=dev
++# Force install all dependencies, ensuring devDependencies are included
++# Disable fund/audit to speed up and reduce network requests
++RUN npm config set registry https://registry.npmjs.org/ && \
++    npm install --include=dev --no-fund --no-audit
++
++# Also install vite globally as a fallback
++RUN npm install -g vite
+ 
+ # Copy source code
+ COPY . .
+ 
+-# Build the app explicitly using the local binary to bypass npx IPv6 network drops
+-RUN ./node_modules/.bin/vite build
++# Build the app using the globally installed or correctly resolved local vite
++RUN vite build
+ 
+ # Nginx serving stage
+ FROM nginx:alpine

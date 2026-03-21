@@ -706,8 +706,6 @@ export default function InvoiceFormPage() {
                                                     value={item.rate_per_watt || ''}
                                                     onChange={e => updateItem(idx, 'rate_per_watt', e.target.value)}
                                                     className="input-field p-2 text-sm text-right"
-                                                    min={item.is_coupon ? undefined : "0"}
-                                                    max={item.is_coupon ? "0" : undefined}
                                                     step="0.01"
                                                     placeholder="0.48"
                                                 />
@@ -779,8 +777,6 @@ export default function InvoiceFormPage() {
                                                 value={item.unit_price}
                                                 onChange={e => updateItem(idx, 'unit_price', e.target.value)}
                                                 className="input-field p-2 text-sm text-right"
-                                                min={item.is_coupon ? undefined : "0"}
-                                                max={item.is_coupon ? "0" : undefined}
                                                 step="0.01"
                                             />
                                         </div>
